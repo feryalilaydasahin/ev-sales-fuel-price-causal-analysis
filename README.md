@@ -1,72 +1,30 @@
-# EV Market Demand Forecast Dataset (Sales + Trends + Infrastructure)
+# Does Gasoline Price Drive EV Sales?
+### ML forecasting, explainable AI (SHAP) and causal inference
 
-## Overview
-A comprehensive monthly dataset covering global electric vehicle (EV) market dynamics,
-combining sales data, consumer interest signals, charging infrastructure, and fuel prices.
-Designed for demand forecasting, market analysis, and time-series modeling.
+**Question:** Do higher gasoline prices increase electric vehicle sales, and under which conditions?
 
-## Dataset Statistics
-- Rows: 420
-- Countries: 8 (China, France, Germany, India, Netherlands, Norway, USA, United Kingdom)
-- Period: 2019-01 to 2023-12
-- Brands: All, BYD, Tesla, VW
+**Data:** [EV Market Master Dataset](https://www.kaggle.com/) (Kaggle, CC BY 4.0) — 8 countries, 9 country–brand series, monthly, 2019–2023, 420 observations.
+
+## Approach
+1. **Forecasting:** Random Forest, XGBoost and LightGBM vs. a naive "last month" baseline, with a time-based split (train 2019–2022, test 2023)
+2. **Explainability:** SHAP summary, dependence and waterfall plots
+3. **Causal inference:** Double Machine Learning (LinearDML) and Causal Forest DML (EconML), with a log-scale robustness check
+
+## Key findings
+- Random Forest reached R² = 0.966 on 2023, but the naive baseline did as well (R² = 0.968): sales in this dataset are quarterly figures split into months, so past sales dominate.
+- Raw data shows a **negative** correlation between gasoline price and EV sales, driven by cross-country differences.
+- After controlling for confounders, **no statistically significant causal effect** was found (LinearDML ATE CI and Causal Forest ATE CI both include zero; log model: +0.10 USD/L → +1.5%, 95% CI −3.5% to +6.7%).
+
+## What I learned
+The first version of this project reported much stronger results. A review revealed **data leakage** (a rolling average that included the current month), a train/test split that was not chronological, and a misreported causal coefficient. Fixing these changed the conclusion — a good reminder that correlation and a high R² are not evidence of causation.
 
 ## Files
 | File | Description |
-|------|-------------|
-| ev_market_master.csv | Full merged dataset (primary file) |
-| ev_sales_brands.csv | Brand-level sales (BYD, Tesla, VW) |
-| ev_trends_monthly.csv | Google Trends scores per keyword |
-| ev_charging_monthly.csv | Charging infrastructure by country |
-| fuel_prices_monthly.csv | Gasoline prices USD/liter |
+|---|---|
+| `EV_sales_fuel_prices_duzeltilmis.ipynb` | Full analysis with outputs |
+| `Rapor_duzeltilmis.pdf` | Detailed report (Turkish) |
+| `ev_market_master.csv` | Dataset |
 
-## Columns
+**Tools:** Python, pandas, scikit-learn, XGBoost, LightGBM, SHAP, EconML, matplotlib, seaborn
 
-### Core identifiers
-- `country` — Country name
-- `brand` — EV brand (BYD, Tesla, VW, All)
-- `year`, `month`, `quarter`, `date_str` — Time dimensions
-
-### Sales
-- `units_sold` — Monthly EV units sold (estimated from quarterly where monthly unavailable)
-- `drivetrain_type` — BEV, PHEV, or BEV+PHEV combined
-- `frequency` — Data granularity (monthly / monthly_est / annual_interpolated)
-
-### Google Trends (0–100 scale, relative search interest)
-- `trend_electric_car` — Search interest: "electric car"
-- `trend_byd` — Search interest: "BYD"
-- `trend_tesla` — Search interest: "Tesla"
-- `trend_ev_charging` — Search interest: "EV charging"
-- `trend_electric_vehicle` — Search interest: "electric vehicle"
-
-### Infrastructure
-- `slow_chargers_cumulative` — Level 2 public chargers (year-end, interpolated monthly)
-- `fast_chargers_cumulative` — DC fast chargers (year-end, interpolated monthly)
-- `total_chargers_cumulative` — Combined
-
-### Fuel prices
-- `gasoline_price_usd_per_liter` — Monthly average gasoline price in USD/liter
-
-### Engineered features (for ML/forecasting)
-- `units_sold_lag1`, `lag3`, `lag12` — Lagged sales
-- `units_sold_rolling3` — 3-month rolling average
-- `units_sold_yoy_growth` — Year-over-year growth rate
-
-## Sources
-- IEA Global EV Outlook 2024 (https://www.iea.org/reports/global-ev-outlook-2024)
-- Google Trends via pytrends
-- BYD Co. Ltd monthly sales press releases
-- Tesla IR quarterly reports
-- AFDC (US DOE Alternative Fuels Station Locator)
-- IEA Charging Infrastructure data
-- GlobalPetrolPrices.com / IEA Energy Prices
-
-## Use Cases
-- EV demand forecasting (ARIMA, XGBoost, LSTM)
-- Market penetration analysis
-- Correlation: fuel price vs EV adoption
-- Infrastructure readiness vs sales velocity
-- Cross-country comparative analysis (China vs Europe vs USA)
-
-## License
-CC BY 4.0 — Attribution required. Cite sources above.
+*Feryal İlayda Şahin — Industrial Engineering, İstanbul University-Cerrahpaşa*
