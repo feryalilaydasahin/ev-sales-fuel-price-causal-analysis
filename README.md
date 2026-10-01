@@ -21,9 +21,10 @@ The first version of this project reported much stronger results. A review revea
 ## Files
 | File | Description |
 |---|---|
-| `EV_sales_fuel_prices_duzeltilmis.ipynb` | Full analysis with outputs |
-| `Rapor_duzeltilmis.pdf` | Detailed report (Turkish) |
-| `ev_market_master.csv` | Dataset |
+| `EV_sales_fuel_prices_.ipynb` | Full analysis with outputs |
+| `Report.pdf` | Detailed report (Turkish) |
+| `ev_market_master.csv` | Main dataset |
+| `ev_charging_monthly.csv`, `ev_sales_brands.csv`, `ev_trends_monthly.csv`, `fuel_prices_monthly.csv` | Supporting datasets |
 
 **Tools:** Python, pandas, scikit-learn, XGBoost, LightGBM, SHAP, EconML, matplotlib, seaborn
 
